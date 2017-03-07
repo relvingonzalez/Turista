@@ -9,6 +9,7 @@
         $routeProvider
             .when('/',{
                 controller: 'MainController',
+                controllerAs: 'MainCtrl',
                 templateUrl: 'views/main.html',
                 resolve: {
                     position: function (myLocation) {
@@ -18,6 +19,7 @@
             })
             .when('/about',{
                 controller: 'AboutController',
+                controllerAs:'AboutCtrl',
                 templateUrl: 'views/about.html'
             })
             .otherwise({

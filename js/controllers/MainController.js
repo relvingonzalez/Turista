@@ -1,44 +1,57 @@
 //Creator Relvin Gonzalez
 //This controller receives the current user location and gets near places by JSON
 //position promise made by myLocation service
-app.controller('MainController',['$scope','position','$http',function($scope,position,$http) {
+(function () {
+    "use strict";
 
-    $scope.lat = position.lat;
-    $scope.lng = position.lng;
+    angular.module('Turista')
+        .controller('MainController', MainController);
 
-    $scope.mapCenter = {
-        lat: $scope.lat,
-        lng: $scope.lng,
-        zoom: 30
-    };
-    var getNearPlaces = $http.jsonp('https://en.wikipedia.org/w/api.php?action=query&' +
-    'list=geosearch&gsradius=5000&gscoord=' + $scope.lat + '%7C' + $scope.lng + '&gslimit=30&format=json&callback=JSON_CALLBACK')
-        .success(function (data) {
-            return data;
-        })
-        .error(function (err) {
-            return err;
-        })
+    MainController.$inject = ['myLocation', 'places'];
+
+    function MainController( myLocation, places) {
+
+        var vm = this;
+
+        activate();
+
+        function activate(){
+
+            myLocation.getLocation().then(gotLocation);
+
+            function gotLocation(position){
+                vm.lat = position.lat;
+                vm.lng = position.lng;
+
+                vm.mapCenter = {
+                    lat: vm.lat,
+                    lng: vm.lng,
+                    zoom: 30
+                };
+
+                places.getWikipediaPlaces(vm.lat,vm.lng).then(pointOfOrigin);
+
+                function pointOfOrigin(geodata){
+                    vm.geodata = geodata;
+                    var pointOfOrigin = {
+                        lat: position.lat,
+                        lng: position.lng,
+                        message: "You are here!",
+                        icon: {
+                            type: 'awesomeMarker',
+                            icon: 'user',
+                            markerColor: "red",
+                            iconColor: 'white'
+                        }
+                    };
+                    vm.mapMarkers = geodataToMarkers(vm.geodata);
+                    vm.mapMarkers.push(pointOfOrigin);
+                }
+            }
 
 
-   getNearPlaces.success(function(data){
-   	$scope.geodata = data;
-    var pointOfOrigin ={
-        lat: position.lat,
-        lng: position.lng,
-        message:"You are here!",
-        icon: {
-            type: 'awesomeMarker',
-            icon: 'user',
-            markerColor: "red",
-            iconColor: 'white'
         }
-    };
-    $scope.mapMarkers = geodataToMarkers($scope.geodata);
-    $scope.mapMarkers.push(pointOfOrigin);
-       var sthaaap = false;
-   });
 
 
-
-}])
+    }
+});

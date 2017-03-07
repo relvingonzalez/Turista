@@ -48,10 +48,6 @@
                     vm.mapMarkers.push(pointOfOrigin);
                 }
             }
-
-
         }
-
-
     }
-});
+})();

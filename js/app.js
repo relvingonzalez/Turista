@@ -1,9 +1,12 @@
 
 (function () {
+
     "use strict";
 
     angular.module('Turista',['leaflet-directive','ngRoute'])
         .config(config);
+
+    config.$inject = ['$routeProvider'];
 
     function config($routeProvider){
         $routeProvider
@@ -27,4 +30,4 @@
             });
 
     }
-});
+})();
